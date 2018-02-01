@@ -1,0 +1,98 @@
+# Blood Sugar Simulator
+
+## Input and Output:
+
+Given the following input:
+Sample files
+input.txt - Date, Time, Event, glycation/exercise index
+```
+2018-01-01 08:00 EAT 7
+2018-01-01 08:10 EAT 65
+2018-01-01 08:30 EAT 67
+2018-01-01 09:00 exercise 3
+2018-01-01 10:00 EAT 25
+2018-01-01 12:00 EAT 122
+2018-01-01 12:00 EAT 6
+2018-01-01 15:00 EAT 108
+2018-01-01 18:00 EAT 120
+2018-01-01 18:00 EAT 116
+2018-01-01 18:00 EAT 97
+2018-01-01 18:00 EAT 89
+2018-01-01 19:15 EAT 63
+2018-01-01 20:00 exercise 2
+```
+
+foods.txt - food_id, glycation_index
+```
+1 47
+2 55
+3 46
+4 42
+5 44
+```
+
+exercise.txt - exercise_id, exercise_index
+```
+1 20
+2 15
+3 40
+4 60
+5 60
+6 45
+```
+
+This program will produce the following sample output:
+
+bloodsugar_log.csv - logs at 1 minute intervals
+```
+date,timeblood sugar
+2018-1-1,8:0,80
+2018-1-1,8:1,80.63333333333334
+2018-1-1,8:2,81.26666666666668
+2018-1-1,8:3,81.90000000000002
+2018-1-1,8:4,82.53333333333336
+2018-1-1,8:5,83.1666666666667
+2018-1-1,8:6,83.80000000000004
+2018-1-1,8:7,84.43333333333338
+```
+
+glycation_log.csv - logs at 1 minute intervals
+```
+date,time,glycation
+2018-1-1,8:0,0
+2018-1-1,8:1,0
+2018-1-1,8:2,0
+2018-1-1,8:3,0
+2018-1-1,8:4,0
+2018-1-1,8:5,0
+2018-1-1,8:6,0
+2018-1-1,8:7,0
+2018-1-1,8:8,0
+2018-1-1,8:9,0
+2018-1-1,8:10,0
+
+```
+
+## Usage:
+Ruby version 2.1.1p76
+On command line in bin directory type
+`ruby bloodsugarsim.rb foods.txt exercise.txt input.txt`
+
+
+
+## Design Overview
+
+The program designs around the Session class. Session duration is determined by the first and last timestamps in input.txt. Session will begin at the first timestamp and will end 3 hours after the last timestamp. The main loop in Session#run iterates time at 1 minute intervals. At a food or exercise event, a blood sugar update is added to a hash with a future execution timestamp and a blood sugar index to be added or subtracted at a per minute interval. In the main loop, we check the hash and process any pending blood sugar updates with a matching timestamp. Glycation and blood sugar normalization is also check at this time by monitoring the current blood sugar level and idle time respectively. Two event logs are produced when processing for the session duration is complete.
+
+The Parser and TimeStampParser are used by the main app. It parses the command line and ensures all input file operations and food and exercise indices are set to the correct format.
+
+An EventLog can be used to create a EventLog object for an input (food/exercise) event or a blood sugar or glycation event.
+
+The Event class encapsulate the input (food and exercise) paramaters in a hash.
+
+
+
+## Language desicions
+
+Ruby was choosen for its readability and elegant testing framework. It is the most modern and dynamic language that I have been using recently.
+
